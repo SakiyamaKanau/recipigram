@@ -1,0 +1,56 @@
+<section class="hero is-success">
+  <div class="hero-body">
+    <div class="container">
+      <h1 class="title">
+        レシピ一覧
+      </h1>
+    </div>
+  </div>
+</section>
+
+  <h2>★PV数ランキング</h2>
+    <% @ranking_recipes.each_with_index do |ranking_recipe,index| %>
+      <%= index + 1 %>位
+      <%= link_to(ranking_recipe.title,"/recipes/#{ranking_recipe.id}") %>
+      (<%= REDIS.zscore("recipes/daily/#{Date.today.to_s}", ranking_recipe.id).to_i %>PV)
+    <% end %>
+   </ul>
+  
+<section class="section">
+  <div class="container">
+    <div class="columns is-multiline">
+      <% @recipes.each do |recipe| %>
+        <div class="column is-4">
+          <div class="card">
+            <div class="card-image">
+              <figure class="image is-4by3">
+                <%= link_to recipe_path(recipe) do %>
+                  <%= attachment_image_tag recipe, :image %>
+                <% end %>
+              </figure>
+            </div>
+            <div class="card-content">
+              <div class="media">
+                <div class="media-left">
+                  <figure class="image is-48x48">
+                    <%= attachment_image_tag recipe.user, :profile_image, fallback: "no-image.png", class: "profile_image" %>
+                  </figure>
+                </div>
+                <div class="media-content">
+                  <div class="title"><%=link_to recipe.title, recipe_path(recipe) %></div>
+                </div>
+              </div>
+
+              <div class="content">
+                <time><%= recipe.updated_at.strftime("%Y-%m-%d %H:%M") %></time>更新
+              </div>
+              <div class="text-sm-right">
+                    <%=link_to recipe.user.username, user_path(recipe.user) %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
